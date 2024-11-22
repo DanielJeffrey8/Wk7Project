@@ -14,7 +14,8 @@ CREATE TABLE project
 		actual_hours DECIMAL (7,2),
 		difficulty INT,
 		notes TEXT,
-		PRIMARY KEY (project_id)
+		PRIMARY KEY (project_id);
+		
 	  );
 		
 CREATE TABLE category 
