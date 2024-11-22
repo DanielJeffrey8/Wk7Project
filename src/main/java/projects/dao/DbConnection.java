@@ -7,6 +7,7 @@ import projects.exception.DbException;
 
 public class DbConnection 
 {
+	
 	// CONSTANT VARIABLES
 	private static String     HOST = "localhost";
 	private static String PASSWORD = "project";

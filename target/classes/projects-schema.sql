@@ -1,11 +1,8 @@
-DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS project_category;
+DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS step;
 DROP TABLE IF EXISTS material;
 DROP TABLE IF EXISTS project;
-
-
-
 
 CREATE TABLE project 
       ( project_id INT AUTO_INCREMENT NOT NULL,
@@ -20,8 +17,7 @@ CREATE TABLE project
 CREATE TABLE category 
 	  ( category_id INT AUTO_INCREMENT NOT NULL,
 		category_name VARCHAR(64) NOT NULL,
-		PRIMARY KEY (category_id)
-		
+		PRIMARY KEY (category_id)		
 	  );
 	   
 
