@@ -5,6 +5,7 @@ package projects;
 		import java.util.List;
 		import java.util.Objects;
 		import java.util.Scanner;
+		
 		import projects.entity.Project;
 		import projects.exception.DbException;
 		import projects.service.ProjectService;
@@ -14,9 +15,14 @@ package projects;
 		{
 			private Scanner scanner = new Scanner(System.in);
 			private ProjectService projectService = new ProjectService();
+			private Project curProject;
 			
 			//@formatter:off
-			private List<String> operations = List.of("1) Add a project");
+			private List<String> operations = List.of(
+					"1) Add a project", 
+					"2) List projects",
+					"3) Select a project"
+					);
 			// @formatter:on
 			
 	
@@ -31,8 +37,8 @@ package projects;
 			
 			
 //METHODS
-			//Process User Selections
-					private void       processUserSelections() 
+		//Process User Selections
+					private void processUserSelections() 
 					{	boolean done = false;
 						while (!done) 
 						{	try 
@@ -45,6 +51,12 @@ package projects;
 										case 1:
 											createProject();
 											break;
+										case 2:
+											listProjects();
+											break;
+										case 3:
+											selectProject();
+											break;
 										default:
 											System.out.println("\n" + selection + " is not a valid selection.  Try again.");
 											break;
@@ -54,9 +66,65 @@ package projects;
 						}
 					}
 
+		//Get User Selection
+					private Integer getUserSelection(String prompt) 
+					{	if ( prompt.equals("Enter a menu selection"))
+							{	printOperations();
+							}
+						String input = getStringInput(prompt);
+						
+						if(Objects.isNull(input))
+							{	return -1; }
+						try {	return Integer.valueOf(input); 	}
+							catch(NumberFormatException e)	{ throw new DbException(input + " is not a valid number."); }
+					}
 
-			// Create Project
-					private void       createProject() 
+		// Get Integer Input
+					/*
+					 * null value on return type INTEGER flag!!!  
+					 * had to revise code to circumvent error.
+					 * Deleted getIntegerInput method.
+					 * Added code to catch difference in getUserSelection method
+					 */
+
+		// Get String Input
+					private String getStringInput(String prompt) 
+					{	System.out.print("\n" + prompt + ": ");
+						String input = scanner.nextLine();
+						
+						return input.isBlank() ? null : input.trim();
+					}
+
+					
+		// Select Project.
+				private void selectProject() 
+				{	listProjects();
+					
+				
+					Integer projectId = getUserSelection("Enter a project ID to select a project");
+
+					curProject = null;
+
+					curProject = projectService.fetchProjectById(projectId);
+
+					return ;
+				}
+
+
+
+		// Get a list of Projects.
+					private void listProjects() 
+					{	List<Project> projects = projectService.fetchAllProjects();
+					
+						System.out.println("\n\nProjects  [ Id,  Name ]");
+						
+						projects.forEach(project -> System.out.println("ID: \t" + project.getProjectId() + "\tProject:  " + project.getProjectName()));
+					}
+
+
+
+		// Create Project
+					private void createProject() 
 					{	String     projectName    = getStringInput  ("Enter the project name");
 						BigDecimal estimatedHours = getDecimalInput ("Enter the estimated hours");
 						BigDecimal actualHours    = getDecimalInput ("Enter the actual hours");
@@ -76,7 +144,7 @@ package projects;
 					}
 
 					
-			// Get Decimal Input
+		// Get Decimal Input
 					private BigDecimal getDecimalInput(String prompt) 
 					{	String input = getStringInput(prompt);
 						
@@ -89,45 +157,20 @@ package projects;
 					}
 
 
-			//Get User Selection
-					private Integer    getUserSelection(String prompt) 
-					{	if ( prompt.equals("Enter a menu selection"))
-							{	printOperations();
-							}
-						String input = getStringInput(prompt);
-						
-						if(Objects.isNull(input))
-							{	return -1; }
-						try {	return Integer.valueOf(input); 	}
-						catch(NumberFormatException e)	{ throw new DbException(input + " is not a valid number."); }
-					}
-
-			// Get Integer Input
-					/*
-					 * null value on return type INTEGER flag!!!  
-					 * had to revise code to circumvent error.
-					 * Deleted getIntegerInput method.
-					 * Added code to catch difference in getUserSelection method
-					 */
-
-			// Get String Input
-					private String     getStringInput(String prompt) 
-					{	System.out.print(prompt + ": ");
-						String input = scanner.nextLine();
-						
-						return input.isBlank() ? null : input.trim();
-					}
-
-
-			//Print Operations
-					private void       printOperations() 
+		//Print Operations
+					private void printOperations() 
 					{	System.out.println("\nThese are the available selections.  Press the Enter key to quit:");
 						operations.forEach( operation -> System.out.println("   " + operation));
+						
+						if(Objects.isNull(curProject))
+						{	System.out.println("\n**** No project is currently open.");
+						}	else 
+							{ System.out.println("\nThis project is currently open:" + curProject);}
 					}
 					
-			// Exit Menu
-					private boolean    exitMenu() 
-					{	System.out.println("Exiting the menu.");
+		// Exit Menu
+					private boolean exitMenu() 
+					{	System.out.println("\n\n\t\tExiting the menu.");
 						return true;
 					}
 					
