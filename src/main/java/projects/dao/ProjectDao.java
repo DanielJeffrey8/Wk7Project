@@ -1,7 +1,5 @@
 package projects.dao;
 
-
-
 import java.util.Collection;
 //Imports
 		import java.util.LinkedList;
