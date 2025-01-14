@@ -1,7 +1,5 @@
 package projects.service;
 
-
-
 //Imports
 		import java.util.List;
 		import java.util.NoSuchElementException;
