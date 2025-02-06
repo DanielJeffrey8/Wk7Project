@@ -27,15 +27,15 @@ public class Project {
     return projectId;
   }
 
-  public void setProjectId(Integer projectId) {
+  public void    setProjectId(Integer projectId) {
     this.projectId = projectId;
   }
 
-  public String getProjectName() {
+  public String  getProjectName() {
     return projectName;
   }
 
-  public void setProjectName(String projectName) {
+  public void    setProjectName(String projectName) {
     this.projectName = projectName;
   }
 
@@ -43,10 +43,10 @@ public class Project {
     return estimatedHours;
   }
 
-  public void setEstimatedHours(BigDecimal estimatedHours) {
+  public void    setEstimatedHours(BigDecimal estimatedHours) {
     this.estimatedHours = estimatedHours;
   }
-
+ 
   public BigDecimal getActualHours() {
     return actualHours;
   }
@@ -59,7 +59,7 @@ public class Project {
     return difficulty;
   }
 
-  public void setDifficulty(Integer difficulty) {
+  public void setDifficulty(Integer difficulty) { 
     this.difficulty = difficulty;
   }
 

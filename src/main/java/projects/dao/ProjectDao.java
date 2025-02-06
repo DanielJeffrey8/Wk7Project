@@ -71,8 +71,9 @@ import java.util.Collection;
 						catch (SQLException e) { throw new DbException(e);}
 					}
 
-		// Fetch Project ID.
-					public Optional<Project> fetchProjectById(Integer projectId)  
+				
+		// Fetch Project By ID.
+				public Optional<Project> fetchProjectById(Integer projectId)  
 						{	String sql = "SELECT * FROM "
 										+ PROJECT_TABLE 
 										+ " WHERE project_id = ?" ;
@@ -110,8 +111,9 @@ import java.util.Collection;
 								{	throw new DbException(e);}
 						}
 
+				
 		// Fetch Steps For Project.	
-					private List<Step> fetchStepsForProject(Connection conn, Integer projectId) throws SQLException
+				private List<Step> fetchStepsForProject(Connection conn, Integer projectId) throws SQLException
 						{	String sql  = "SELECT * FROM " 
 										+ STEP_TABLE + " WHERE project_id = ?";
 
@@ -125,9 +127,10 @@ import java.util.Collection;
 										}
 								}
 						}
-					
+
+				
 		// Fetch Materials For Project.	
-					private List<Material> fetchMaterialsForProject(Connection conn, Integer projectId) throws SQLException
+				private List<Material> fetchMaterialsForProject(Connection conn, Integer projectId) throws SQLException
 						{	String sql  = "SELECT * FROM " 
 										+ MATERIAL_TABLE 
 										+ " WHERE project_id = ?";
@@ -143,9 +146,10 @@ import java.util.Collection;
 										}
 								}
 						}
-					
+
+				
 		// Fetch Categories For Project.
-					private List<Category> fetchCategoriesForProject(Connection conn, Integer projectId) throws SQLException
+				private List<Category> fetchCategoriesForProject(Connection conn, Integer projectId) throws SQLException
 						{	String sql  = "SELECT * FROM " 
 										+ CATEGORY_TABLE 
 										+ " JOIN " + PROJECT_CATEGORY_TABLE 
@@ -162,8 +166,9 @@ import java.util.Collection;
 								}
 						}
 			
+
 		// Fetch ALL Projects.
-					public List<Project>  fetchAllProjects() 
+				public List<Project>  fetchAllProjects() 
 						{	String sql = "" 
 									   + "SELECT * FROM " 
 									   + PROJECT_TABLE 
@@ -192,6 +197,76 @@ import java.util.Collection;
 							catch(SQLException e)
 								{	throw new DbException(e);	}
 						}
+				
+				
+		// Modify Project Details
+				public boolean modifyProjectDetails(Project project) 
+				{	String sql = "UPDATE " + PROJECT_TABLE + " SET "
+								+ "project_name = ?, "
+								+ "estimated_hours = ?, "
+								+ "actual_hours = ?, "
+								+ "difficulty = ?, "
+								+ "notes = ? " 
+								+ "WHERE project_id = ? ";
+				
+					try (Connection conn = DbConnection.getConnection())
+					{	startTransaction(conn);
+					
+						try (PreparedStatement stmt = conn.prepareStatement(sql))
+							{	setParameter(stmt, 1, project.getProjectName(), String.class);
+						 		setParameter(stmt, 2, project.getEstimatedHours(), BigDecimal.class);
+						 		setParameter(stmt, 3, project.getActualHours(), BigDecimal.class);
+						 		setParameter(stmt, 4, project.getDifficulty(), Integer.class);
+						 		setParameter(stmt, 5, project.getNotes(), String.class);
+						 		setParameter(stmt, 6, project.getProjectId(), Integer.class);
+					 		
+						 		boolean modified = stmt.executeUpdate() == 1;
+
+					 			commitTransaction(conn);
+
+					 			return modified;	
+							}
+							
+							catch (Exception e)
+								{	rollbackTransaction(conn);
+									throw new DbException(e);
+								}
+					}
+					
+					catch(SQLException e)
+						{	throw new DbException(e);	}
+				}
+
+				
+		// Delete a Project
+				public boolean deleteProject(Integer projectId) 
+				{	String sql = "DELETE FROM " + PROJECT_TABLE 
+								+ " WHERE project_id = ? ";
+		
+					try (Connection conn = DbConnection.getConnection())
+					{	startTransaction(conn);
+					
+						try (PreparedStatement stmt = conn.prepareStatement(sql))
+							{	
+								setParameter(stmt, 1, projectId, Integer.class);
+								
+						 		boolean modified = stmt.executeUpdate() == 1;
+		
+					 			commitTransaction(conn);
+		
+					 			return modified;	
+							}
+							
+							catch (Exception e)
+								{	rollbackTransaction(conn);
+									throw new DbException(e);
+								}
+					}
+					
+					catch(SQLException e)
+						{	throw new DbException(e);	}
+				}
+
 
 
 

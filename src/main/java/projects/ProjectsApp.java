@@ -16,12 +16,16 @@ package projects;
 			private Scanner scanner = new Scanner(System.in);
 			private ProjectService projectService = new ProjectService();
 			private Project curProject;
-			
+		
+// OPERATIONS....
 			//@formatter:off
 			private List<String> operations = List.of(
 					"1) Add a project", 
 					"2) List projects",
-					"3) Select a project"
+					"3) Select a project",
+					"4) Update current project details",
+					"5) Delete a project",
+					" **** Press the Enter key to quit ****"					
 					);
 			// @formatter:on
 			
@@ -35,8 +39,10 @@ package projects;
 			}// MAIN
 		
 			
-			
+
 //METHODS
+			
+		// SWITCH
 		//Process User Selections
 					private void processUserSelections() 
 					{	boolean done = false;
@@ -57,6 +63,12 @@ package projects;
 										case 3:
 											selectProject();
 											break;
+										case 4:
+											updateProjectDetails();
+											break;
+										case 5:
+											deleteProject();
+											break;
 										default:
 											System.out.println("\n" + selection + " is not a valid selection.  Try again.");
 											break;
@@ -65,6 +77,7 @@ package projects;
 							catch(Exception e) { System.out.println("\nError: " + e + " Try again."); }
 						}
 					}
+					
 
 		//Get User Selection
 					private Integer getUserSelection(String prompt) 
@@ -79,6 +92,7 @@ package projects;
 							catch(NumberFormatException e)	{ throw new DbException(input + " is not a valid number."); }
 					}
 
+					
 		// Get Integer Input
 					/*
 					 * null value on return type INTEGER flag!!!  
@@ -87,6 +101,7 @@ package projects;
 					 * Added code to catch difference in getUserSelection method
 					 */
 
+					
 		// Get String Input
 					private String getStringInput(String prompt) 
 					{	System.out.print("\n" + prompt + ": ");
@@ -95,9 +110,54 @@ package projects;
 						return input.isBlank() ? null : input.trim();
 					}
 
+			
+		// Get Decimal Input
+					private BigDecimal getDecimalInput(String prompt) 
+					{	String input = getStringInput(prompt);
+						
+						if (Objects.isNull(input))
+							{ return null; }
+						
+			
+						try { return new BigDecimal(input).setScale(2); }
+						catch (NumberFormatException e) { throw new DbException(input + " is not a valid decimal number."); }
+					}
+
 					
+		// Update Project Details
+					private void updateProjectDetails() 
+					{	if ( curProject != null )
+							{	String     projectName    = getStringInput( "Enter the project name [" + curProject.getProjectName() + "]");
+								BigDecimal estimatedHours = getDecimalInput ("Enter the estimated hours [" + curProject.getEstimatedHours() + "]");
+								BigDecimal actualHours    = getDecimalInput ("Enter the actual hours [" + curProject.getActualHours() + "]" );
+								Integer    difficulty     = getUserSelection("Enter the project difficulty (1-5) [" + curProject.getDifficulty() + "]");
+								String     notes          = getStringInput  ("Enter the project notes ]" + curProject.getNotes() + "]");
+									
+								Project project = new Project();
+								
+								project.setProjectName   (Objects.isNull(projectName) ? curProject.getProjectName() : projectName );
+								project.setEstimatedHours(Objects.isNull(estimatedHours) ? curProject.getEstimatedHours() : estimatedHours);
+								project.setActualHours   (Objects.isNull(actualHours) ? curProject.getActualHours() : actualHours);
+								project.setDifficulty    (Objects.isNull(difficulty) ? curProject.getDifficulty() : difficulty);
+								project.setNotes         (Objects.isNull(notes) ? curProject.getNotes() : notes);
+								
+								project.setProjectId     ( curProject.getProjectId() );
+								
+								projectService.modifyProjectDetails(project);
+								
+								curProject = projectService.fetchProjectById(curProject.getProjectId());
+						
+						
+							}	
+						else 
+							{	System.out.println("\nPlease select a project.");
+								return;									
+							}
+					}
+
+	
 		// Select Project.
-				private void selectProject() 
+					private void selectProject() 
 				{	listProjects();
 					
 				
@@ -111,16 +171,15 @@ package projects;
 				}
 
 
-
 		// Get a list of Projects.
 					private void listProjects() 
 					{	List<Project> projects = projectService.fetchAllProjects();
 					
-						System.out.println("\n\nProjects  [ Id,  Name ]");
+						System.out.println("\n\nThis is a Current list of Projects on file: [ Id,  Name ]");
 						
-						projects.forEach(project -> System.out.println("ID: \t" + project.getProjectId() + "\tProject:  " + project.getProjectName()));
+						projects.forEach(project -> System.out.println
+								("ID: \t" + project.getProjectId() + "\tProject:  " + project.getProjectName()));
 					}
-
 
 
 		// Create Project
@@ -143,23 +202,32 @@ package projects;
 						System.out.println("You have successfully created project: " + dbProject);							
 					}
 
-					
-		// Get Decimal Input
-					private BigDecimal getDecimalInput(String prompt) 
-					{	String input = getStringInput(prompt);
+	
+		// Delete a Project
+					private void deleteProject() 
+					{	listProjects();
 						
-						if (Objects.isNull(input))
-							{ return null; }
+					 	int projectId = getUserSelection("Enter the ID of the Project you would like to DELETE or press the ENTER key to return to the Main Menue )");
+					 	
+						if (projectId == -1)
+							{	return;	}
 						
-			
-						try { return new BigDecimal(input).setScale(2); }
-						catch (NumberFormatException e) { throw new DbException(input + " is not a valid decimal number."); }
+						projectService.deleteProject(projectId);
+						
+						System.out.println("Project ID = " + projectId + " has been DELETED...");
+						
+						if ( curProject != null )
+						{	if ( projectId == curProject.getProjectId())
+							{	curProject = null;	}
+						}
+
+						return ;
 					}
 
-
+					
 		//Print Operations
 					private void printOperations() 
-					{	System.out.println("\nThese are the available selections.  Press the Enter key to quit:");
+					{	System.out.println("\nThese are the available Options.");
 						operations.forEach( operation -> System.out.println("   " + operation));
 						
 						if(Objects.isNull(curProject))
@@ -167,6 +235,7 @@ package projects;
 						}	else 
 							{ System.out.println("\nThis project is currently open:" + curProject);}
 					}
+					
 					
 		// Exit Menu
 					private boolean exitMenu() 
