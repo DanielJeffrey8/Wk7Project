@@ -55,9 +55,9 @@ CREATE TABLE project_category
 	  
 INSERT INTO project (project_name, estimated_hours, actual_hours, difficulty, notes) 
 	VALUES	('Hang a door.', 2, 1, 1, 'Used hinges from home depot project.'),
-			('Install a window.', 2, 1.5, 2, 'Single hung vinyl with grid.'),
-			('Break a window.', 1, .15, 1, 'Customer refused to pay for new window.'),
-			('Install carpet.', 20, 15, 3, 'Used customers old carpet.');
+		('Install a window.', 2, 1.5, 2, 'Single hung vinyl with grid.'),
+		('Break a window.', 1, .15, 1, 'Customer refused to pay for new window.'),
+		('Install carpet.', 20, 15, 3, 'Used customers old carpet.');
 	
 	
 INSERT INTO material (project_id, material_name, num_required, cost)
@@ -66,34 +66,34 @@ INSERT INTO material (project_id, material_name, num_required, cost)
     		(1, 'Door Set', 1, 65.38),
     		
     		(2, 'Glass', 1, 25 ),
-			(2, 'Puddy', 1, 5),
+		(2, 'Puddy', 1, 5),
 			
-			(3, 'Rock', 1, 0 ),
+		(3, 'Rock', 1, 0 ),
 			
-			(4, 'Carpet', 1, 0 ),
-			(4, 'Tack strips', 10, 45.22);
+		(4, 'Carpet', 1, 0 ),
+		(4, 'Tack strips', 10, 45.22);
 	
 	
 INSERT INTO step (project_id, step_text, step_order)
-	VALUES (1, 'Remove old glass', 1),
-           (1, 'Clean off old putty.', 2),
-           (1, 'Insert new glass.', 3),
-           (1, 'Putty new glass.', 4),
-           
-           (2, 'Install hinge on door jamb.', 1 ),
-           (2, 'Install door on hinges.', 2 ),
-           
-           (3, 'Throw ROCK through newlly installed window!!!!', 1 ),
-           
-           (4, 'Clean floors.', 1 ),
-           (4, 'Install tack strips.', 2 ),
-           (4, 'Install carpet.', 3 );  
+	VALUES 	(1, 'Remove old glass', 1),
+		(1, 'Clean off old putty.', 2),
+		(1, 'Insert new glass.', 3),
+		(1, 'Putty new glass.', 4),
+		   
+		(2, 'Install hinge on door jamb.', 1 ),
+		(2, 'Install door on hinges.', 2 ),
+		   
+		(3, 'Throw ROCK through newlly installed window!!!!', 1 ),
+		   
+		(4, 'Clean floors.', 1 ),
+		(4, 'Install tack strips.', 2 ),
+		(4, 'Install carpet.', 3 );  
 	
 	
 INSERT INTO category (category_id, category_name)
-	VALUES (1,'Doors and Windows'),
-           (2, 'Flooring'),
-           (3, 'Bad Customers!');
+	VALUES  (1,'Doors and Windows'),
+           	(2, 'Flooring'),
+           	(3, 'Bad Customers!');
 
 	 
 INSERT INTO project_category (project_id, category_id)
